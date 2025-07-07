@@ -1,0 +1,42 @@
+[project]
+name = "fast-mcp-pandoc"
+version = "0.1.0"
+description = "Fast MCP server with SSE streaming for pandoc document conversion"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.27.1",
+    "pypandoc>=1.14",
+    "pandoc>=2.4",
+    "pydantic>=2.5.0",
+    "sse-starlette>=1.6.5",
+]
+[[project.authors]]
+name = "Felix"
+email = "felix@example.com"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+fast-mcp-pandoc = "fast_mcp_pandoc:main"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

@@ -1,22 +1,47 @@
 ![PyPI Downloads](https://img.shields.io/pypi/dm/mcp-pandoc) <a href="https://smithery.ai/server/mcp-pandoc"><img alt="Smithery Badge" src="https://smithery.ai/badge/mcp-pandoc"></a> <a href="https://glama.ai/mcp/servers/xyzzgaj9bk"><img width="380" height="200" src="https://glama.ai/mcp/servers/xyzzgaj9bk/badge" /></a> [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/vivekvells-mcp-pandoc-badge.png)](https://mseep.ai/app/vivekvells-mcp-pandoc)
 
-# mcp-pandoc: A Document Conversion MCP Server
+# MCP-Pandoc Lernprojekt: Dokumentenkonvertierung mit Fast MCP und SSE
 
-> Officially included in the [Model Context Protocol servers](https://github.com/modelcontextprotocol/servers/blob/main/README.md) open-source project. 🎉
+> Ein Lernrepo für AI Coding zur Demonstration von Fast MCP-Architektur, Worker-Pool-Implementation und SSE (Server-Sent Events) Streaming.
+>
+> Basierend auf [Model Context Protocol servers](https://github.com/modelcontextprotocol/servers/blob/main/README.md).
 
-## Overview
+## Übersicht und Lernziele
 
-A Model Context Protocol server for document format conversion using [pandoc](https://pandoc.org/index.html). This server provides tools to transform content between different document formats while preserving formatting and structure.
+Dieses Repository dient als Lernressource für KI-gestützte Codierungstechniken und demonstriert die Refaktorisierung eines Model Context Protocol (MCP) Servers für Dokumentenkonvertierung mit [Pandoc](https://pandoc.org/index.html).
 
-Please note that mcp-pandoc is currently in early development. PDF support is under development, and the functionality and available tools are subject to change and expansion as we continue to improve the server.
+### Lernziele
 
-Credit: This project uses the [Pandoc Python package](https://pypi.org/project/pandoc/) for document conversion, forming the foundation for this project.
+1. **Verständnis von MCP-Architektur**: Lernen Sie die Grundlagen der Model Context Protocol-Architektur kennen
+2. **Asynchrone Verarbeitung**: Implementierung eines Worker-Pools für parallele Dokumentkonvertierung
+3. **Echtzeit-Updates mit SSE**: Server-Sent Events für Streaming-Fortschrittsaktualisierungen
+4. **Modernes API-Design**: Strukturierung einer FastAPI-Anwendung mit Pydantic-Modellen
+5. **Testdriven Development**: Umfassende Testabdeckung mit Pytest
 
-## Demo
+Dieses Projekt verwendet das [Pandoc Python-Paket](https://pypi.org/project/pandoc/) für die Dokumentenkonvertierung als Grundlage.
 
-[![mcp-pandoc - v1: Seamless Document Format Conversion for Claude using MCP server](https://img.youtube.com/vi/vN3VOb0rygM/maxresdefault.jpg)](https://youtu.be/vN3VOb0rygM)
+## Projektstruktur: Original und Erweiterungen
 
-> 🎥 [Watch on YouTube](https://youtu.be/vN3VOb0rygM)
+Dieses Repository ist in zwei Hauptteile gegliedert:
+
+### 1. Original MCP-Pandoc (`/mcp-pandoc/`)
+
+**Status**: Ursprüngliche Implementierung
+
+Eine Basisimplementierung des Model Context Protocol Servers für Dokumentkonvertierung mit synchroner Verarbeitung.
+
+### 2. Fast-MCP-Pandoc (`/fast-mcp-pandoc/`)
+
+**Status**: Neue, refaktorisierte Implementierung mit erweiterten Funktionen
+
+Eine moderne Neuimplementierung mit:
+
+- **Worker-Pool**: Asynchrone parallele Verarbeitung
+- **SSE-Streaming**: Echtzeit-Fortschrittsbenachrichtigungen
+- **Verbesserte Modellierung**: Saubere Trennung von Datenmodellen und Logik
+- **Umfassende Tests**: API-Endpunkt- und Komponententests
+
+> 🎥 [Originale MCP-Pandoc-Demo auf YouTube](https://youtu.be/vN3VOb0rygM)
 
 <details>
 <summary>Screenshots</summary>
@@ -30,26 +55,37 @@ Credit: This project uses the [Pandoc Python package](https://pypi.org/project/p
 
 More to come...
 
-## Tools
+## Bereitgestellte Funktionen und APIs
 
-1. `convert-contents`
-   - Transforms content between supported formats
-   - Inputs:
-     - `contents` (string): Source content to convert (required if input_file not provided)
-     - `input_file` (string): Complete path to input file (required if contents not provided)
-     - `input_format` (string): Source format of the content (defaults to markdown)
-     - `output_format` (string): Target format (defaults to markdown)
-     - `output_file` (string): Complete path for output file (required for pdf, docx, rst, latex, epub formats)
-   - Supported input/output formats:
-     - markdown
-     - html
-     - pdf
-     - docx
-     - rst
-     - latex
-     - epub
-     - txt
-   - Note: For advanced formats (pdf, docx, rst, latex, epub), an output_file path is required
+### Original MCP-Pandoc
+
+1. **`convert-contents` Tool**
+   - Transformiert Inhalte zwischen unterstützten Formaten
+   - Eingaben:
+     - `contents` (string): Zu konvertierender Quellinhalt
+     - `input_file` (string): Vollständiger Pfad zur Eingabedatei
+     - `input_format` (string): Quellformat des Inhalts (Standard: markdown)
+     - `output_format` (string): Zielformat (Standard: markdown)
+     - `output_file` (string): Vollständiger Pfad für die Ausgabedatei
+
+### Fast-MCP-Pandoc (Neue Implementierung)
+
+1. **REST-API-Endpunkte**
+   - `/health`: Gesundheitsstatus-Check (GET)
+   - `/heartbeat`: Server-Heartbeat für SSE-Verbindungen (GET)
+   - `/convert`: Synchrone Dokumentkonvertierung (POST)
+   - `/convert/stream`: Streaming-Konvertierung mit SSE-Updates (GET)
+
+2. **Worker-Pool-System**
+   - Parallele Verarbeitung mehrerer Konvertierungsaufgaben
+   - Fortschritts-Callbacks für Echtzeit-Updates
+   - Automatische Ressourcenverwaltung
+
+3. **SSE-Streaming-Events**
+   - `progress`: Fortschrittsaktualisierungen (0-100%)
+   - `complete`: Erfolgreiche Konvertierungen mit Ergebnis
+   - `error`: Fehlerbenachrichtigungen
+   - `heartbeat`: Verbindungs-Alive-Signale
 
 ### Supported Formats
 
@@ -186,113 +222,150 @@ To use the published one
      - Basic: txt, html, markdown
      - Advanced: pdf, docx, rst, latex, epub
 
-## Quickstart
+## Installation und Start
 
-### Install
+### 1. Original MCP-Pandoc Server
 
-#### Option 1: Installing manually via claude_desktop_config.json config file
+**WICHTIG: Der originale MCP-Pandoc Server kann mit Smithery oder uv/uvx installiert werden.**
 
-- On MacOS: `open ~/Library/Application\ Support/Claude/claude_desktop_config.json`
-- On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+#### Option 1: Manuelle Konfiguration in Claude Desktop
 
-a) Only for local development & contribution to this repo
-<details>
-  <summary>Development/Unpublished Servers Configuration</summary>
+- MacOS: `open ~/Library/Application\ Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%/Claude/claude_desktop_config.json`
 
-  ℹ️ Replace <DIRECTORY> with your locally cloned project path
-  
-  ```bash
-  "mcpServers": {
-    "mcp-pandoc": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "<DIRECTORY>/mcp-pandoc",
-        "run",
-        "mcp-pandoc"
-      ]
-    }
+```json
+"mcpServers": {
+  "mcp-pandoc": {
+    "command": "uv",
+    "args": [
+      "--directory",
+      "<VERZEICHNIS>/mcp-pandoc",
+      "run",
+      "mcp-pandoc"
+    ]
   }
-  ```
-  
-</details>
+}
+```
 
-b) Published Servers Configuration - Consumers should use this config
-
-  ```bash
-  "mcpServers": {
-    "mcp-pandoc": {
-      "command": "uvx",
-      "args": [
-        "mcp-pandoc"
-      ]
-    }
-  }
-  ```
-
-#### Option 2: To install Published Servers Configuration automatically via Smithery
-
-Run the following bash command to install **published** [mcp-pandoc pypi](https://pypi.org/project/mcp-pandoc) for Claude Desktop automatically via [Smithery](https://smithery.ai/server/mcp-pandoc):
+#### Option 2: Automatische Installation via Smithery
 
 ```bash
 npx -y @smithery/cli install mcp-pandoc --client claude
 ```
 
-- If you face any issue, use the "Published Servers Configuration" above directly instead of this cli. 
+### 2. Fast-MCP-Pandoc Server (Neue SSE-Version)
 
-**Note**: To use locally configured mcp-pandoc, follow "Development/Unpublished Servers Configuration" step above.
+**WICHTIG: Der neue Fast-MCP-Pandoc Server kann NUR lokal oder via Docker gestartet werden, nicht via Smithery/uv.**
 
-## Development
+#### Option 1: Lokale Installation mit virtueller Umgebung
 
-### Building and Publishing
-
-To prepare the package for distribution:
-
-1. Sync dependencies and update lockfile:
+1. **Virtuelle Umgebung erstellen und aktivieren**
 
 ```bash
-uv sync
+cd fast-mcp-pandoc
+python3 -m venv venv
+source venv/bin/activate
 ```
 
-2. Build package distributions:
+2. **Abhängigkeiten installieren**
 
 ```bash
-uv build
+pip install fastapi uvicorn pypandoc sse-starlette pydantic pytest pytest-asyncio
 ```
 
-This will create source and wheel distributions in the `dist/` directory.
-
-3. Publish to PyPI:
+3. **Server starten**
 
 ```bash
-uv publish
+python -m src.server
 ```
 
-Note: You'll need to set PyPI credentials via environment variables or command flags:
+Der Server läuft dann auf `http://0.0.0.0:8000`.
 
-- Token: `--token` or `UV_PUBLISH_TOKEN`
-- Or username/password: `--username`/`UV_PUBLISH_USERNAME` and `--password`/`UV_PUBLISH_PASSWORD`
+#### Option 2: Docker-Container
 
-### Debugging
-
-Since MCP servers run over stdio, debugging can be challenging. For the best debugging
-experience, we strongly recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector).
-
-You can launch the MCP Inspector via [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) with this command:
+1. **Docker-Image bauen**
 
 ```bash
-npx @modelcontextprotocol/inspector uv --directory /Users/vivekvells/Desktop/code/ai/mcp-pandoc run mcp-pandoc
+cd fast-mcp-pandoc
+docker build -t fast-mcp-pandoc .
 ```
 
-Upon launching, the Inspector will display a URL that you can access in your browser to begin debugging.
+2. **Container starten**
+
+```bash
+docker run -p 8000:8000 fast-mcp-pandoc
+```
+
+Der Server ist dann über `http://localhost:8000` erreichbar.
+
+## Lernkomponenten und Programmierkonzepte
+
+### 1. Worker-Pool-Implementierung
+
+Der Worker-Pool in `fast-mcp-pandoc/src/worker.py` demonstriert:
+
+- **ThreadPoolExecutor**: Asynchrone Task-Ausführung in separaten Threads
+- **Callback-Mechanismen**: Fortschrittskommunikation zwischen Threads
+- **Task-Kapselung**: Saubere Abstraktionen für Konvertierungsaufgaben
+
+### 2. Server-Sent Events (SSE)
+
+Die SSE-Implementierung in `fast-mcp-pandoc/src/server.py` zeigt:
+
+- **Langlebige Verbindungen**: Aufrechterhaltung von Client-Verbindungen
+- **Echtzeit-Updates**: Senden von Ereignissen ohne Client-Anfragen
+- **Heartbeat-Mechanismus**: Verbindungserhaltung bei Inaktivität
+
+### 3. API-Design mit FastAPI
+
+- **Pydantic-Modelle**: Strenge Typisierung und automatische Validierung
+- **Dependency Injection**: Saubere Komponentenintegration
+- **Async/Await-Pattern**: Non-blocking I/O für hohe Skalierbarkeit
+
+### 4. Testdriven Development
+
+Die Tests in `fast-mcp-pandoc/tests/` demonstrieren:
+
+- **Unit-Tests**: Isolierte Komponententests
+- **Integrationstests**: API-Endpunkt-Validierung
+- **Mock-Objekte**: Simulation von externen Abhängigkeiten
+- **Edge Cases**: Robustheitstests für Fehlerszenarien
+
+### Debugging der Original-MCP-Implementierung
+
+Für die Fehlersuche im ursprünglichen MCP-Server empfehlen wir den [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
+
+```bash
+npx @modelcontextprotocol/inspector uv --directory <PFAD>/mcp-pandoc run mcp-pandoc
+```
 
 ---
 
-## Contributing
+## Übungen für Kursteilnehmer
 
-We welcome contributions to enhance mcp-pandoc! Here's how you can get involved:
+Dieses Repository bietet verschiedene Lernaufgaben, um Ihre KI-Coding-Fähigkeiten zu verbessern:
 
-1. **Report Issues**: Found a bug or have a feature request? Open an issue on our [GitHub Issues](https://github.com/vivekVells/mcp-pandoc/issues) page.
-2. **Submit Pull Requests**: Improve the codebase or add features by creating a pull request.
+### Einstiegsaufgaben
+
+1. **API-Endpunkt erweitern**: Fügen Sie einen neuen `/formats` Endpunkt hinzu, der alle unterstützten Formate auflistet
+2. **Fortschrittsberichte verbessern**: Erweitern Sie die Fortschrittsberichte um detailliertere Informationen
+
+### Mittelstufe
+
+1. **Speicherüberwachung**: Implementieren Sie eine Speichernutzungsüberwachung für große Dokumente
+2. **Parallelitätssteuerung**: Fügen Sie eine dynamische Anpassung der Worker-Pool-Größe basierend auf der Systemlast hinzu
+
+### Fortgeschritten
+
+1. **Formatunterstützung erweitern**: Integrieren Sie neue Dokumentformate und Konvertierungsoptionen
+2. **Fehlertoleranz**: Implementieren Sie Wiederholungslogik für fehlgeschlagene Konvertierungen
+3. **Leistungsoptimierung**: Identifizieren und optimieren Sie Leistungsengpässe
+
+## Beitragen
+
+Beiträge zur Verbesserung dieses Lernrepositories sind willkommen! So können Sie sich beteiligen:
+
+1. **Fehler melden**: Haben Sie einen Bug gefunden oder haben einen Vorschlag? Öffnen Sie ein Issue.
+2. **Pull-Requests einreichen**: Verbessern Sie den Code oder fügen Sie neue Features hinzu.
 
 ---

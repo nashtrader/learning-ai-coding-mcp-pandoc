@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  fast-mcp-pandoc:
+    build:
+      context: ./fast-mcp-pandoc
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - LOG_LEVEL=info
+    restart: unless-stopped
